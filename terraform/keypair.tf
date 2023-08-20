@@ -18,7 +18,7 @@ resource "aws_key_pair" "instance_key_pair" {
 
 resource "local_file" "instance_private_key_local_storage" {
   content         = tls_private_key.instance_private_key.private_key_pem
-  filename        = "${var.instance_key_dir}/${local.instance_key_name}.pem"
+  filename        = "${path.module}/../ansible/${local.instance_key_name}.pem"
   file_permission = "0600"
 
   depends_on = [
