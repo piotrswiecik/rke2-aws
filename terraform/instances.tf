@@ -14,21 +14,6 @@ data "aws_ami" "ubuntu" {
   owners = ["099720109477"] # Canonical
 }
 
-variable "master_instance_type" {
-  type    = string
-  default = "t2.medium"
-}
-
-variable "worker_instance_type" {
-  type    = string
-  default = "t2.medium"
-}
-
-variable "worker_instance_count" {
-  type    = number
-  default = 2
-}
-
 resource "aws_instance" "kubernetes_ec2_master" {
   ami           = data.aws_ami.ubuntu.id
   instance_type = var.master_instance_type
