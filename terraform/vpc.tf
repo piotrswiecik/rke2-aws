@@ -28,3 +28,29 @@ resource "aws_subnet" "kubernetes_subnet" {
     Name = "subnet-${random_shuffle.az.result[0]}-public-kubernetes"
   }
 }
+
+resource "aws_internet_gateway" "kubernetes_igw" {
+  vpc_id = aws_vpc.kubernetes_vpc.id
+
+  tags = {
+    Name = "igw-${var.aws_region}-kubernetes"
+  }
+}
+
+resource "aws_route_table" "kubernetes_route_table" {
+  vpc_id = aws_vpc.kubernetes_vpc.id
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.kubernetes_igw.id
+  }
+
+  tags = {
+    Name = "route-table-${var.aws_region}-kubernetes"
+  }
+}
+
+resource "aws_route_table_association" "kubernetes_subnet_route_table_association" {
+  subnet_id      = aws_subnet.kubernetes_subnet.id
+  route_table_id = aws_route_table.kubernetes_route_table.id
+}
