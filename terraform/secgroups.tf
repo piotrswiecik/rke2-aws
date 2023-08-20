@@ -31,6 +31,14 @@ resource "aws_security_group" "kubernetes_security_group" {
     self        = true
   }
 
+  ingress {
+    description = "Allow access to kubelet port for cluster members"
+    from_port   = 10250
+    to_port     = 10250
+    protocol    = "tcp"
+    self        = true
+  }
+
   egress {
     description = "Allow all outbound traffic"
     from_port   = 0
