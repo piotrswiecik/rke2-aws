@@ -38,3 +38,6 @@ terraform.rc
 .vscode/
 .idea/*
 .idea/
+
+# ssh keys
+kubernetes-ec2-key*
