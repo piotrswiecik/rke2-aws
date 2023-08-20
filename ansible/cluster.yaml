@@ -1,7 +1,27 @@
 ---
-- hosts: controlplane
+# - hosts: controlplane
+#   become: true
+
+#   roles:
+#     - role: controlplane
+#       tags: controlplane
+
+- hosts: controlplane, workers
+  become: true
+
+  tasks:
+    - name: acquire rke2 node token
+      shell: |
+        cat /var/lib/rancher/rke2/server/node-token
+      register: rke2_node_token
+      delegate_to: master
+    - name: register rke2 node token as ansible fact for all nodes
+      set_fact:
+        rke2_node_token: "{{ rke2_node_token.stdout }}"
+
+- hosts: workers
   become: true
 
   roles:
-    - role: controlplane
-      tags: controlplane
+    - role: worker
+      tags: worker

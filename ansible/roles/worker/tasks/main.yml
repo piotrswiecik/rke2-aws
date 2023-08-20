@@ -1,0 +1,38 @@
+---
+# tasks file for roles/worker
+- name: create rancher config dir
+  file:
+    path: /etc/rancher/rke2
+    state: directory
+- name: verify if node token is set
+  fail:
+    msg: "rke2_node_token is not set"
+  when: rke2_node_token is not defined
+- name: print node token
+  debug:
+    var: rke2_node_token
+- name: create rke2 config
+  template:
+    src: config.yaml.j2
+    dest: /etc/rancher/rke2/config.yaml
+    owner: root
+    group: root
+    mode: 0644
+- name: run rke2 launch script
+  shell: |
+    curl -sfL $RKE2_INSTALL_SCRIPT_URL | sh -
+  environment:
+    RKE2_INSTALL_SCRIPT_URL: "{{ rke2_install_script_url }}"
+  register: rke2_install
+- name: output rke2 install status
+  debug:
+    var: rke2_install
+- name: enable and start rke2-agent service
+  service:
+    name: rke2-agent
+    enabled: true
+    state: started
+  register: rke2_launch
+- name: output rke2 agent launch status
+  debug:
+    var: rke2_launch
