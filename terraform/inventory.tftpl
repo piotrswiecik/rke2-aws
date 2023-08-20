@@ -1,0 +1,23 @@
+[controlplane]
+%{ if length(controlplane_ips) == 1 ~}
+master ${controlplane_ips[0]}
+%{ else }
+%{ for index, master_ip in controlplane_ips ~}
+${format("master%d", index+1)} ${master_ip}
+%{ endfor ~}
+%{ endif ~}
+
+[workers]
+%{ for index, worker_ip in worker_ips ~}
+${format("worker%d", index+1)} ${worker_ip}
+%{ endfor ~}
+
+[controlplane:vars]
+ansible_user=ubuntu
+ansible_ssh_private_key_file=
+ansible_ssh_common_args='-o StrictHostKeyChecking=no IdentitiesOnly=yes'
+
+[workers:vars]
+ansible_user=ubuntu
+ansible_ssh_private_key_file=
+ansible_ssh_common_args='-o StrictHostKeyChecking=no IdentitiesOnly=yes'

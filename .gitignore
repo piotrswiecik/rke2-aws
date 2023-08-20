@@ -41,3 +41,6 @@ terraform.rc
 
 # ssh keys
 kubernetes-ec2-key*
+
+# ansible tf inventory artifact
+ansible/inventory
