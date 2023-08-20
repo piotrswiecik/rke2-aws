@@ -21,6 +21,8 @@ _vars/main.yml_
 ```yaml
 # rke node token must be provided in some way - passed to this role from outside
 rke2_node_token: insert_token_here
+
+# controlplane ip must be provided in some way - passed to this role from outside
 ```
 
 Dependencies
@@ -32,7 +34,6 @@ Example Playbook
 ----------------
 
 ```yaml
----
 - hosts: controlplane
   become: true
 
@@ -40,12 +41,26 @@ Example Playbook
     - role: controlplane
       tags: controlplane
 
+- hosts: controlplane, workers
+  become: true
+
+  # some parameters must be injected into worker configuration
+  tasks:
+    - name: acquire rke2 node token
+      shell: |
+        cat /var/lib/rancher/rke2/server/node-token
+      register: rke2_node_token
+      delegate_to: master
+    - name: register rke2 node token as ansible fact for all nodes
+      set_fact:
+        rke2_node_token: "{{ rke2_node_token.stdout }}"
+
 - hosts: workers
   become: true
 
   roles:
-    - role: workers
-      tags: workers
+    - role: worker
+      tags: worker
 ```
 
 License

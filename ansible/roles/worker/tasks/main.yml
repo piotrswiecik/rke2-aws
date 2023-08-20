@@ -20,7 +20,7 @@
     mode: 0644
 - name: run rke2 launch script
   shell: |
-    curl -sfL $RKE2_INSTALL_SCRIPT_URL | sh -
+    curl -sfL $RKE2_INSTALL_SCRIPT_URL | INSTALL_RKE2_TYPE="agent" sh -
   environment:
     RKE2_INSTALL_SCRIPT_URL: "{{ rke2_install_script_url }}"
   register: rke2_install
