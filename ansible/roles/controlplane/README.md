@@ -18,6 +18,9 @@ kubernetes_apt_key_url: "https://pkgs.k8s.io/core:/stable:/v1.28/deb/Release.key
 kubernetes_apt_key_folder: "/etc/apt/keyrings"
 kubernetes_apt_key_filename: "kubernetes-apt-keyring.gpg"
 kubernetes_apt_source: "https://pkgs.k8s.io/core:/stable:/v1.28/deb/ /"
+
+# verify RKE2 website & make sure to use current url
+rke2_install_script_url: "https://get.rke2.io"
 ```
 
 Dependencies

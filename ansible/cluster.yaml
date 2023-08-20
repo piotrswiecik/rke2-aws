@@ -1,7 +1,7 @@
 ---
-- hosts: all
+- hosts: controlplane
   become: true
 
-  tasks:
-    - name: echo
-      shell: echo "Hello World"
+  roles:
+    - role: controlplane
+      tags: controlplane

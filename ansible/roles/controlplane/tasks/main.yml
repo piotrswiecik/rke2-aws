@@ -27,3 +27,44 @@
     name: kubectl
     state: present
     update_cache: true
+- name: run rke2 launch script
+  shell: |
+    curl -sfL $RKE2_INSTALL_SCRIPT_URL | sh -
+  environment:
+    RKE2_INSTALL_SCRIPT_URL: "{{ rke2_install_script_url }}"
+  register: rke2_install
+- name: output rke2 install status
+  debug:
+    var: rke2_install
+- name: enable and start rke2-server service
+  service:
+    name: rke2-server
+    enabled: true
+    state: started
+  register: rke2_launch
+- name: output rke2 launch status
+  debug:
+    var: rke2_launch
+- name: wait for rke2-server service to be running
+  wait_for:
+    host: localhost
+    port: 6443
+    state: started
+    delay: 5
+    timeout: 60
+- name: create .kube dir
+  file:
+    path: /home/ubuntu/.kube
+    state: directory
+    owner: ubuntu
+    group: ubuntu
+    mode: 0755
+- name: copy rke2 admin kubeconfig
+  copy:
+    src: /etc/rancher/rke2/rke2.yaml
+    dest: /home/ubuntu/.kube/config
+    owner: ubuntu
+    group: ubuntu
+    mode: 0600
+    remote_src: true
+
