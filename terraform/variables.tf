@@ -18,3 +18,7 @@ variable "worker_instance_count" {
   type    = number
   default = 2
 }
+
+variable "instance_key_dir" {
+  default = "${path.module}/../ansible"
+}

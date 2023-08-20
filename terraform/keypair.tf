@@ -1,9 +1,5 @@
 locals {
-  instance_key_name = "kubernetes-ec2-key-${formatdate("YYYYMMDD", timestamp())}"
-}
-
-variable "instance_key_dir" {
-  default = "."
+  instance_key_name = "kubernetes-ec2-key"
 }
 
 resource "tls_private_key" "instance_private_key" {
