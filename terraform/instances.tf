@@ -23,6 +23,7 @@ resource "aws_instance" "kubernetes_ec2_master" {
   instance_type = var.master_instance_type
 
   subnet_id = aws_subnet.kubernetes_subnet.id
+  security_groups = [aws_security_group.kubernetes_security_group.id]
 
   key_name = aws_key_pair.instance_key_pair.key_name
 
