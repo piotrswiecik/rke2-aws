@@ -1,0 +1,29 @@
+---
+# tasks file for ansible/roles/controlplane
+- name: install packages required by kubectl
+  apt:
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+    state: present
+    update_cache: true
+- name: ensure that /etc/apt/keyrings dir exists
+  file:
+    path: "{{ kubernetes_apt_key_folder }}"
+    state: directory
+- name: add kubernetes apt key
+  apt_key:
+    url: "{{ kubernetes_apt_key_url }}"
+    state: present
+    keyring: "{{ kubernetes_apt_key_folder }}/{{ kubernetes_apt_key_filename }}"
+- name: add kubernetes apt repository
+  apt_repository:
+    filename: kubernetes.list
+    repo: "deb [signed-by={{ kubernetes_apt_key_folder }}/{{ kubernetes_apt_key_filename }}] {{ kubernetes_apt_source }}"
+    state: present
+- name: install kubectl
+  apt:
+    name: kubectl
+    state: present
+    update_cache: true
