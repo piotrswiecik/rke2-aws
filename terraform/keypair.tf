@@ -12,7 +12,7 @@ resource "tls_private_key" "instance_private_key" {
 }
 
 resource "aws_key_pair" "instance_key_pair" {
-  key_name   = local.instance_key_name
+  key_name   = "kubernetes_ec2_key"
   public_key = tls_private_key.instance_private_key.public_key_openssh
 
   depends_on = [
