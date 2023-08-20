@@ -15,20 +15,46 @@ data "aws_ami" "ubuntu" {
 }
 
 variable "master_instance_type" {
+  type    = string
   default = "t2.medium"
+}
+
+variable "worker_instance_type" {
+  type    = string
+  default = "t2.medium"
+}
+
+variable "worker_instance_count" {
+  type    = number
+  default = 2
 }
 
 resource "aws_instance" "kubernetes_ec2_master" {
   ami           = data.aws_ami.ubuntu.id
   instance_type = var.master_instance_type
 
-  subnet_id = aws_subnet.kubernetes_subnet.id
+  subnet_id       = aws_subnet.kubernetes_subnet.id
   security_groups = [aws_security_group.kubernetes_security_group.id]
 
   key_name = aws_key_pair.instance_key_pair.key_name
 
   tags = {
     Name = "ec2-${aws_subnet.kubernetes_subnet.availability_zone}-master"
+  }
+}
+
+resource "aws_instance" "kubernetes_ec2_worker" {
+  ami           = data.aws_ami.ubuntu.id
+  instance_type = var.worker_instance_type
+  count         = var.worker_instance_count
+
+  subnet_id       = aws_subnet.kubernetes_subnet.id
+  security_groups = [aws_security_group.kubernetes_security_group.id]
+
+  key_name = aws_key_pair.instance_key_pair.key_name
+
+  tags = {
+    Name = "ec2-${aws_subnet.kubernetes_subnet.availability_zone}-worker${count.index}"
   }
 }
 
